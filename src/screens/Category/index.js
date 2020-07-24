@@ -83,7 +83,7 @@ class Category extends Component {
 
                 </View>
 
-                <TouchableOpacity style={styles.category} onPress={() => this.gotof()} >
+                <TouchableOpacity style={styles.category} onPress={() => this.addFarm()} >
                     <Text style={{ color: "white" }}>Add Farm</Text>
                 </TouchableOpacity>
                 
