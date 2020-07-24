@@ -1,0 +1,209 @@
+import React, {Component} from "react";
+import {Image} from "react-native";
+import {
+  Container,
+  Content,
+  Text,
+  Item,
+  Input,
+  Button,
+  View,
+  ListItem,
+  Radio
+} from "native-base";
+import RadioGroup from 'react-native-custom-radio-group';
+import {Grid, Col} from "react-native-easy-grid";
+import styles from "./styles";
+
+const commonColor = require("../../theme/variables/commonColor");
+const logo = require("../../../assets/logo.png");
+
+const radioGroupList = [{
+  label: 'Farmer',
+  value: 'farmer'
+}, {
+  label: 'Supplier',
+  value: 'supplier'
+}, {
+  label: 'Consumer',
+  value: 'consumer'
+}];
+
+class SignUp extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      firstname: "",
+      surname: "",
+      email: "",
+      password: "",
+      mobileoremail:"",
+      confirmPassword:"",
+      activeBgColor: "white",
+      activeTxtColor: "black",
+      inActiveBgColor: "white",
+      inActiveTxtColor: "black",
+      type:""  
+    };
+  }
+
+  register = () =>{
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    const navigation = this.props.navigation;
+
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: JSON.stringify({
+        "email":this.state.mobileoremail,
+        "password":this.state.password,
+        "picture":"",
+        "surname":this.state.surname ,
+        "type":this.state.type,
+        "name":this.state.firstname
+      })
+    };
+
+    fetch("https://saosa.herokuapp.com/api/users/register", requestOptions)
+      .then(response => response.json())
+      .then(result => {
+        if(this.state.type === "farmer"){
+          navigation.navigate("Category", {userID:result})
+        }
+        else(
+          navigation.navigate("Drawer")
+        )
+      }
+      )
+      .catch(error => console.log('error', error));
+  }
+
+  changeStyle(value) {
+    if(value == "farmer") {
+        this.setState({
+              activeBgColor: "red",
+              activeTxtColor: "white",
+              inActiveBgColor: "white",
+              inActiveTxtColor: "black",
+              type:"farmer"
+        });
+    } else if(value == "supplier") {
+        this.setState({
+              activeBgColor: "blue",
+              activeTxtColor: "white",
+              inActiveBgColor: "white",
+              inActiveTxtColor: "black",
+              type:"supplier"
+
+        });
+    } else if(value == "consumer") {
+         this.setState({
+               activeBgColor: "green",
+               activeTxtColor: "white",
+               inActiveBgColor: "white",
+               inActiveTxtColor: "black",
+               type:"consumer"
+         });
+    }
+}
+
+  render() {
+    const navigation = this.props.navigation;
+    return (
+      <Container style={styles.background}>
+        <Content>
+          <View style={styles.logoContainerView}>
+            <Image source={logo} style={styles.imageShadow} />
+          </View>
+          <View style={styles.formContainerView}>
+            <Grid>
+              <Col style={{paddingRight: 10}}>
+                <Item borderType="underline" style={styles.inputGrp}>
+                  <Input
+                    placeholder="First Name"
+                    placeholderTextColor={commonColor.lightTextColor}
+                    onChangeText={firstname => this.setState({firstname})}
+                    style={{color: "#000"}}
+                  />
+                </Item>
+              </Col>
+              <Col style={{paddingLeft: 10}}>
+                <Item borderType="underline" style={styles.inputGrp}>
+                  <Input
+                    placeholder="Surname"
+                    placeholderTextColor={commonColor.lightTextColor}
+                    onChangeText={surname => this.setState({surname})}
+                    style={{color: "#000"}}
+                  />
+                </Item>
+              </Col>
+            </Grid>
+            <Item borderType="underline" style={styles.inputGrp}>
+              <Input
+                placeholder="Email address"
+                placeholderTextColor={commonColor.lightTextColor}
+                onChangeText={mobileoremail => this.setState({mobileoremail})}
+                style={{color: "#000"}}
+              />
+            </Item>
+            <Item borderType="underline" style={styles.inputGrp}>
+              <Input
+                placeholder="Enter New password"
+                placeholderTextColor={commonColor.lightTextColor}
+                secureTextEntry
+                onChangeText={password =>
+                  this.setState({password})}
+                style={{color: "#000"}}
+              />
+            </Item>
+            <Item borderType="underline" style={styles.inputGrp}>
+              <Input
+                placeholder="Re-enter your New password"
+                placeholderTextColor={commonColor.lightTextColor}if
+                secureTextEntry
+                onChangeText={confirmPassword => this.setState({confirmPassword})}
+                style={{color: "#000"}}
+              />
+            </Item>
+
+            <RadioGroup
+                radioGroupList={radioGroupList}
+                buttonContainerActiveStyle = {{backgroundColor: this.state.activeBgColor}}
+                buttonTextActiveStyle = {{color: this.state.activeTxtColor}}
+                buttonContainerInactiveStyle = {{backgroundColor: this.state.inActiveBgColor}}
+                buttonTextInactiveStyle = {{color: this.state.inActiveTxtColor}}
+                onChange={(value) => {this.changeStyle(value);}}
+          />
+            <Button
+              block
+              style={styles.createBtn}
+              onPress={() => this.register()}
+            >
+              <Text style={{lineHeight: 16, fontWeight: "bold"}}>CREATE</Text>
+            </Button>
+          </View>
+          <View style={styles.footerView}>
+            <Button
+              transparent
+              style={styles.signInBtn}
+              onPress={() => navigation.navigate("Home", {
+                "email":this.state.mobileoremail,
+                "password":this.state.password,
+                "picture":"",
+                "surname":this.state.surname ,
+                "name":this.state.firstname
+              })}
+            >
+              <Text style={styles.signInBtnText}>
+                Have an Account already? Sign In
+              </Text>
+            </Button>
+          </View>
+        </Content>
+      </Container>
+    );
+  }
+}
+
+export default SignUp;
