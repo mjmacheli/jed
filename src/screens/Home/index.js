@@ -13,9 +13,8 @@ import {
   Icon,
   Button
 } from "native-base";
-import data from "./data";
 import styles from "./styles";
-
+import AsyncStorage from '@react-native-community/async-storage';
 
 
 const chatContactsImg = require("../../../assets/chatcontacts.png");
@@ -34,8 +33,21 @@ class Home extends Component {
     .then(response => response.json())
     .then(result => {
       this.setState({farm:result})
-    console.log(result)})
+  })
     .catch(error => console.log('error', error));
+  }
+
+  gotoProducts = async (farmID, navigation) => {
+    try {
+      const jsonValue = JSON.stringify(farmID)
+      await AsyncStorage.setItem('farmID', jsonValue)
+      await navigation.navigate('Retailler')
+      // const kees = await AsyncStorage.getItem('farmID')
+      // console.log('then ', kees)
+      
+    } catch (e) {
+      console.error('Not now!!' , farmID)
+    }
   }
 
   search = (text) =>{
@@ -111,9 +123,8 @@ class Home extends Component {
               </View>
               <CardItem 
                 button 
-                  onPress={() => {
-                    navigation.navigate("Retailler", {farmID: item.id})}
-                  }>
+                  onPress={() => 
+                    this.gotoProducts(item.id, navigation)}>
                 <Body>
                   <View style={{ flexDirection: "row" }}>
                     <View style={{ paddingHorizontal: 10, }}>
