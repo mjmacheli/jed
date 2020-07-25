@@ -34,7 +34,7 @@ const HomeTabNavigation = createBottomTabNavigator(
           style={{ height: Platform.OS === "ios" ? 57 * heightRatio : null }}
         >
           <FooterTab>
-            <Button onPress={() => props.navigation.navigate("Retailler")}>
+            <Button onPress={() => props.navigation.goBack()}>
               {props.navigation.state.index === 0 ? (
                 <IconMD
                   name={"home"}

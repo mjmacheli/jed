@@ -49,12 +49,13 @@ class ProductsPage extends Component {
         allowsEditing: true,
         aspect: [4, 3],
         quality: 1,
+        base64: true,
       });
       if (!result.cancelled) {
-        this.setState({ image: result.uri });
+        this.setState({ image: `data:image/jpg;base64,${result.base64}`});
       }
 
-      console.log(result);
+      console.log(result.base64);
     } catch (E) {
       console.log(E);
     }
