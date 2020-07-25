@@ -34,7 +34,7 @@ class Home extends Component {
     .then(response => response.json())
     .then(result => {
       this.setState({farm:result})
-    console.log(result)})
+    })
     .catch(error => console.log('error', error));
   }
 
@@ -51,7 +51,7 @@ class Home extends Component {
   render() {
     const navigation = this.props.navigation;
     return (
-      <Container style={{marginTop:40}}>
+      <Container>
         <Header searchBar >
           <Item style={{ borderRadius: 6, backgroundColor: "rgba(255,255,255,0.5)" }}>
             <Icon name="search" style={{ color: "#fff" }} />
@@ -66,7 +66,7 @@ class Home extends Component {
           <Button
             transparent
             style={styles.headerBtn}
-            onPress={() => navigation.openDrawer()}
+            onPress={() => navigation.navigate("FarmerProfile")}
           >
             <Image source={chatContactsImg} style={styles.sidebarIcon} />
           </Button>
@@ -107,7 +107,7 @@ class Home extends Component {
 
             {this.state.farm.map((item) => (<Card style={{ width: "95%", }} key={item.id}>
               <View style={{ backgroundColor: "white", opacity: 0.9 }}>
-                <Image source={item.farmPicture} style={{ width: "100%", height: 200 }} />
+                <Image source={{uri:item.farmPicture}} style={{ width: "100%", height: 200 }} />
               </View>
               <CardItem 
                 button 
@@ -117,7 +117,7 @@ class Home extends Component {
                 <Body>
                   <View style={{ flexDirection: "row" }}>
                     <View style={{ paddingHorizontal: 10, }}>
-                      <Image source={item.farmPicture} style={{ width: 50, height: 50, borderRadius: 25, }} />
+                      <Image source={{uri:item.farmPicture}} style={{ width: 50, height: 50, borderRadius: 25, }} />
                     </View>
                     <View>
                       <Text style={{ color: "black", fontSize: 15, fontWeight: "bold" }}>{item.title}</Text>

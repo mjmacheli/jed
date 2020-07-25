@@ -13,6 +13,8 @@ import {
 } from "native-base";
 import IconMD from "react-native-vector-icons/MaterialIcons";
 import styles from "./styles";
+import AsyncStorage from '@react-native-community/async-storage';
+
 
 const commonColor = require("../../theme/variables/commonColor");
 const logo = require("../../../assets/logo.png");
@@ -43,10 +45,16 @@ class Login extends Component {
     };
   }
 
+  async storeData(value){
+    try {
+      const jsonValue = JSON.stringify(value)
+      await AsyncStorage.setItem('userID', jsonValue)
+    } catch (e) {
+      console.log("error")
+    }
+  }
+
   renderInput({ input, label, type, meta: { touched, error, warning } }) {
-    console.log('name ', input.name)
-    console.log('value ', input.value)
-    //input.name === 'email' ? setState({email: input.value}) : setState({password: input.value})  
       if(input.name == 'email') {
         setState({email: input.value})
       }
@@ -86,7 +94,7 @@ class Login extends Component {
     );
   }
 
-  login({email, password}) {
+  async login({email, password}) {
     console.log('email ', email)
     console.log('pw ', password)
   
@@ -99,8 +107,8 @@ class Login extends Component {
     })
     .then(res => res.json())
     .then(result => {
-        this.setState({user: result})
-        this.props.navigation.navigate("Drawer", {id: this.state.user.id});
+        this.storeData(result.id)
+        this.props.navigation.navigate("Drawer", {id: result.id});
       })
       .catch(err => {
         return (console.log('not now  ' + err))

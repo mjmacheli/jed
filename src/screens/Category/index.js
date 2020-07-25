@@ -5,6 +5,9 @@ const commonColor = require("../../theme/variables/commonColor");
 const logo = require("../../../assets/logo.png");
 const deviceHeight = Dimensions.get("window").height;
 const deviceWidth = Dimensions.get("window").width;
+import * as ImagePicker from 'expo-image-picker';
+import Constants from 'expo-constants';
+import * as Permissions from 'expo-permissions';
 
 class Category extends Component {
     constructor(props) {
@@ -12,6 +15,7 @@ class Category extends Component {
         this.state = {
           name: "",
           info:"",
+          image: null,
           location:null,
           ...props
         };
@@ -31,6 +35,38 @@ class Category extends Component {
             this.setState({location:location});
       }
 
+      componentDidMount() {
+        this.getPermissionAsync();
+      }
+    
+
+      getPermissionAsync = async () => {
+        if (Constants.platform.ios) {
+          const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+          if (status !== 'granted') {
+            alert('Sorry, we need camera roll permissions to make this work!');
+          }
+        }
+      };
+    
+      _pickImage = async () => {
+        try {
+          let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+          });
+          if (!result.cancelled) {
+            this.setState({ image: result.uri });
+          }
+    
+          console.log(result);
+        } catch (E) {
+          console.log(E);
+        }
+      };
+
       addFarm = () => {
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json-patch+json");
@@ -44,8 +80,8 @@ class Category extends Component {
             "longitude":`${this.state.location.coords.longitude}`,
             "latitude":`${this.state.location.coords.latitude}`,
             "info":this.state.info,
-            "farmPicture":"",
-            // "userID": this.props.navigation.state.params.userID
+            "farmPicture":this.state.image,
+            "userID": this.props.navigation.state.params.userID
           })
         };
         fetch("https://saosa.herokuapp.com/api/Farm/add-farm", requestOptions)
@@ -70,6 +106,15 @@ class Category extends Component {
                     <Text style={{ fontSize: 20, fontWeight: "bold" }}>Farm details</Text>
                 </View>
                 <View>
+
+                    {
+                    this.state.image === null ?
+
+                    <TouchableOpacity onPress={this._pickImage} style={{alignSelf:"center", justifyContent:"center", width:150, height:150, borderRadius:75, borderWidth:2, marginBottom:20}}>
+                    <Text style={{textAlign:"center"}}>user picture</Text>
+                    </TouchableOpacity>:
+                    <Image source={{ uri: this.state.image }} style={{alignSelf:"center", justifyContent:"center", width:150, height:150,borderRadius:75, borderWidth:2, marginBottom:20}}/>
+                    }
                     <TextInput
                     placeholder="farm name"
                     onChangeText={name => this.setState({name})}
