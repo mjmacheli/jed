@@ -34,9 +34,7 @@ class Retailler extends Component {
   }
 
   async componentWillMount(){
-    // const id = await AsyncStorage.getItem('farmID')
-    const id = 32
-    console.log('md', id)
+    const id = await AsyncStorage.getItem('farmID')
     fetch(`https://saosa.herokuapp.com/api/Product/get-farm-products?farmID=${id}`)
     .then(response => response.json())
     .then(result => {
@@ -54,7 +52,7 @@ class Retailler extends Component {
         <Content style={styles.content}>
           <View style={{flexDirection:'row', flexWrap:'wrap'}}>
            {this.state.products.map ((i,index) => (
-              <View style={{ width: '25%', height: 200, margin:17,}}>
+              <View style={{ width: '25%', height: 'auto', margin:17,}}>
                 <Image source={{uri:i.image}}  style={{ width: '100%', height: 200, margin:1 }}>
                   
                 </Image>
