@@ -53,7 +53,7 @@ class Retailler extends Component {
         <Content style={styles.content}>
           <View style={{flexDirection:'row', flexWrap:'wrap'}}>
            {this.state.products.map ((i,index) => (
-              <View style={{ width: '25%', height: 200, margin:17,}}>
+              <View style={{ width: '25%', height: 'auto', margin:17,}}>
                 <Image source={{uri:i.image}}  style={{ width: '100%', height: 200, margin:1 }}>
                   
                 </Image>
