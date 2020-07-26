@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Image} from "react-native";
+import {Image, TouchableOpacity} from "react-native";
 import {
   Container,
   Content,
@@ -14,6 +14,9 @@ import {
 import RadioGroup from 'react-native-custom-radio-group';
 import {Grid, Col} from "react-native-easy-grid";
 import styles from "./styles";
+import * as ImagePicker from 'expo-image-picker';
+import Constants from 'expo-constants';
+import * as Permissions from 'expo-permissions';
 
 const commonColor = require("../../theme/variables/commonColor");
 const logo = require("../../../assets/logo.png");
@@ -43,9 +46,42 @@ class SignUp extends Component {
       activeTxtColor: "black",
       inActiveBgColor: "white",
       inActiveTxtColor: "black",
-      type:""  
+      type:"",
+      image: null,
     };
   }
+
+  componentDidMount() {
+    this.getPermissionAsync();
+  }
+
+  getPermissionAsync = async () => {
+    if (Constants.platform.ios) {
+      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+      if (status !== 'granted') {
+        alert('Sorry, we need camera roll permissions to make this work!');
+      }
+    }
+  };
+
+  _pickImage = async () => {
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+        base64: true,
+      });
+      if (!result.cancelled) {
+        this.setState({ image: `data:image/jpg;base64,${result.base64}`});
+      }
+
+      console.log(result);
+    } catch (E) {
+      console.log(E);
+    }
+  };
 
   register = () =>{
     var myHeaders = new Headers();
@@ -58,7 +94,7 @@ class SignUp extends Component {
       body: JSON.stringify({
         "email":this.state.mobileoremail,
         "password":this.state.password,
-        "picture":"",
+        "picture":this.state.image,
         "surname":this.state.surname ,
         "type":this.state.type,
         "name":this.state.firstname
@@ -117,6 +153,15 @@ class SignUp extends Component {
             <Image source={logo} style={styles.imageShadow} />
           </View>
           <View style={styles.formContainerView}>
+            {
+              this.state.image === null ?
+
+              <TouchableOpacity onPress={this._pickImage} style={{alignSelf:"center", justifyContent:"center", width:150, height:150, borderRadius:75, borderWidth:2}}>
+              <Text style={{textAlign:"center"}}>user picture</Text>
+            </TouchableOpacity>:
+              <Image source={{ uri: this.state.image }} style={{alignSelf:"center", justifyContent:"center", width:150, height:150,borderRadius:75, borderWidth:2}}/>
+            }
+          
             <Grid>
               <Col style={{paddingRight: 10}}>
                 <Item borderType="underline" style={styles.inputGrp}>

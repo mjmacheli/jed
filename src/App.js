@@ -14,7 +14,9 @@ import Category from "./screens/Category";
 import Calendar from "./screens/Calendar";
 import Retailler from "./screens/Retailler/tabNavigation";
 import Consumer from "./screens/Consumer/tabNavigation";
-import FarmerProfile from './screens/FarmerProfile'
+import FarmerProfile from './screens/FarmerProfile/index'
+import AddProducts from './screens/FarmerProfile/productsPage'
+
 
 const Drawer = DrawerNavigator(
   {
@@ -43,12 +45,13 @@ const App = StackNavigator(
     Category: { screen: Category },
     Calendar: { screen: Calendar },
     Retailler: { screen: Retailler },
-    FarmerProfile: { screen: FarmerProfile}
+    FarmerProfile: { screen: FarmerProfile},
+    AddProducts: {screen:AddProducts}
 
   },
   {
     index: 0,
-    initialRouteName: "Drawer",
+    initialRouteName: "Login",
     headerMode: "none"
   }
 );

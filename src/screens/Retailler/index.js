@@ -35,6 +35,7 @@ class Retailler extends Component {
 
   async componentWillMount(){
     const id = await AsyncStorage.getItem('farmID')
+    console.log('md', id)
     fetch(`https://saosa.herokuapp.com/api/Product/get-farm-products?farmID=${id}`)
     .then(response => response.json())
     .then(result => {
