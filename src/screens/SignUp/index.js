@@ -20,6 +20,8 @@ import * as Permissions from 'expo-permissions';
 
 const commonColor = require("../../theme/variables/commonColor");
 const logo = require("../../../assets/logo.png");
+import AsyncStorage from '@react-native-community/async-storage';
+
 
 const radioGroupList = [{
   label: 'Farmer',
@@ -53,6 +55,15 @@ class SignUp extends Component {
 
   componentDidMount() {
     this.getPermissionAsync();
+  }
+
+  async storeData(value){
+    try {
+      const jsonValue = JSON.stringify(value)
+      await AsyncStorage.setItem('userID', jsonValue)
+    } catch (e) {
+      console.log("error")
+    }
   }
 
   getPermissionAsync = async () => {
@@ -104,6 +115,7 @@ class SignUp extends Component {
     fetch("https://saosa.herokuapp.com/api/users/register", requestOptions)
       .then(response => response.json())
       .then(result => {
+        storeData(result)
         if(this.state.type === "farmer"){
           navigation.navigate("Category", {userID:result})
         }
